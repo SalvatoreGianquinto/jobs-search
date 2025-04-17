@@ -1,6 +1,8 @@
 export const ADD_TO_FAVOURITES = "ADD_TO_FAVOURITES"
 export const REMOVE_FROM_FAVOURITES = "REMOVE_FROM_FAVOURITES"
 export const SET_SEARCH_RESULTS = "SET_SEARCH_RESULTS"
+export const SET_LOADING = "SET_LOADING"
+export const SET_ERROR = "SET_ERROR"
 
 export const addToFavouritesAction = (companyName) => {
   return {
@@ -16,13 +18,28 @@ export const removeFromFavouritesAction = (company) => {
   }
 }
 
-export const setSearchResults = (data) => ({
-  type: SET_SEARCH_RESULTS,
-  payload: data,
-})
+export const setSearchResults = (data) => {
+  return {
+    type: SET_SEARCH_RESULTS,
+    payload: data,
+  }
+}
 
+export const setLoadingAction = () => {
+  return {
+    type: SET_LOADING,
+  }
+}
+
+export const setErrorAction = (error) => {
+  return {
+    type: SET_ERROR,
+    payload: error,
+  }
+}
 export const fetchSearchResults = (company) => {
   return (dispatch) => {
+    dispatch(setLoadingAction())
     fetch(`https://strive-benchmark.herokuapp.com/api/jobs?company=${company}`)
       .then((response) => {
         if (response.ok) {
@@ -35,7 +52,7 @@ export const fetchSearchResults = (company) => {
         dispatch(setSearchResults(data.data))
       })
       .catch((error) => {
-        console.log(error)
+        dispatch(setErrorAction(error))
       })
   }
 }
